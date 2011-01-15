@@ -27,6 +27,12 @@
 		 * @var array
 		 */
 		public $rootDirectory = '';
+		/**
+		 * Illegal Characters in file and folder names
+		 * @access public
+		 * @var array
+		 */
+		public $illegalChars = array(':', ';', '|', '`', '>', '<', '~', '*', '?', '"');
 		//Private Variables
 		/**
 		 * Config Class
@@ -89,6 +95,9 @@
 			//Create the new folders if and where required
 			$appendFolder = $this->recursive_mkDir($destination, $this->rootDirectory);
 			
+			//Remove Illegal characters
+			$destination = str_replace($this->illegalChars, '', $destination);
+			
 			//Do the move
 			if (rename($source, $destination)) {
 				$this->Output->send('  %2- File Moved to '.str_replace($this->rootDirectory, '', substr($appendFolder, 0, strrpos($appendFolder, '/'))).'%n');
@@ -105,7 +114,7 @@
 		 */
 		function recursive_mkDir($finalFolder, $niceFolderName = '') {
 			//Create the new folders if and where required
-			$finalFolder = str_replace(array(':', ';', '|', '`', '>', '<', '~', '*', '?', '"'), '', $finalFolder);
+			$finalFolder = str_replace($this->illegalChars, '', $finalFolder);
 			$finalFolder = explode('/', substr($finalFolder, 0, strrpos($finalFolder, '/')));
 			$appendFolder = '';
 			foreach ($finalFolder as $folder) {

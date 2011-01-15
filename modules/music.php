@@ -134,7 +134,7 @@
 						$destination = $this->sorting_message($item, $tag);
 						
 						//Move it
-						$this->fileManager->move($file, $destination);
+						$this->fileManager->move($this->Config->read('unsorted').$item, $destination);
 						
 						//Stat counter
 						$stats['files']++;
@@ -158,6 +158,7 @@
 		 */
 		function sorting_message($item, $info) {
 			$duplicate = TRUE;
+			
 			//Both artist and album have data
 			if (($info['artist'] <> 'Unknown Artist') && ($info['album'] <> 'Unknown Album'))  {
 				//Send a message that we found data
