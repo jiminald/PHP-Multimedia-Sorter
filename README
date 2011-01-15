@@ -46,6 +46,10 @@ Command Line Arguments
 Changelog
 ===========================================================================
 
+v1.1	Added support for more music files		15/Jan/2011
+			+ Added support for WMA, OGG, MP4 and M4A
+			* Updated getID3 to latest stable version
+
 v1.1	Rewritten most of the program			14/Jan/2011
 			v1.0 was more a working theory.
 			+ Colored responces
@@ -64,7 +68,7 @@ ToDo
 * Change Music filename to match an expression given
 	(Accessable via advanced configuration)
 
-* Support Video Files
+* Support Video Files (Already supporting MP4)
 
 
 Wish List

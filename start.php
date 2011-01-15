@@ -33,8 +33,10 @@
 	$Config = include_class('Config', $include_options);
 	$Output = include_class('Output', $include_options);
 	
+	define('GETID3_INCLUDEPATH', 'lib/getID3/');
+	$module_getid3 = include_class('getID3'.EXT, array('level' => 'critical', 'path' => 'lib/getID3/'));
+	
 	/* Load the modules */
-	include_file('lib/getID3/getid3'.EXT, $include_options);
 	$include_options = array('level' => 'critical', 'path' => 'modules/');
 	$module_config_manager = include_class('configManager'.EXT, $include_options);
 	$module_fileManager = include_class('fileManager'.EXT, $include_options);

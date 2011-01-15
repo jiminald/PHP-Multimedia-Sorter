@@ -26,7 +26,7 @@
 		 * @access public
 		 * @var array
 		 */
-		public $extentions = array('mp3', 'wma', 'mp4', 'm4a', 'wav', 'flac', 'ogg', 'aac', 'midi');
+		public $extentions = array('mp3', 'wma', 'mp4', 'm4a', 'ogg');
 		/**
 		 * Default tag data
 		 * @access public
@@ -72,6 +72,7 @@
 			$this->Config = include_class('Config');
 			$this->Output = include_class('Output');
 			$this->fileManager = include_class('fileManager');
+			$this->getID3 = include_class('getID3');
 		}
 		
 		/**
@@ -123,6 +124,19 @@
 						switch ($info['extension']) {
 							case 'mp3':
 								$tag = $this->parse_mp3_tags($file);
+							break;
+							
+							case 'ogg':
+								$tag = $this->parse_ogg_tags($file);
+							break;
+							
+							case 'wma':
+								$tag = $this->parse_wma_tags($file);
+							break;
+							
+							case 'm4a':
+							case 'mp4':
+								$tag = $this->parse_m4a_tags($file);
 							break;
 							
 							default:
@@ -221,35 +235,155 @@
 			//Set default
 			$data = $this->defaultTagData;
 			
+			$tag = $this->getID3->analyze($file);
 			//Get tag data
-			$tag = GetAllMP3info($file);
 			$tagData = '';
-			if (isset($tag['id3']['id3v2'])) {
-				$tagData = $tag['id3']['id3v2'];
-			} elseif (isset($tag['id3']['id3v1'])) {
-				$tagData = $tag['id3']['id3v1'];
+			if (isset($tag['tags_html']['id3v2'])) {
+				$tagData = $tag['tags_html']['id3v2'];
+			} elseif (isset($tag['tags_html']['id3v1'])) {
+				$tagData = $tag['tags_html']['id3v1'];
 			}
 			
 			//If we have valid tag data
 			if ($tagData <> '') {
 				//Artist Data
-				if ((isset($tag['artist'])) && (stristr($tag['artist'], 'unknown') == FALSE)) {
-					$data['artist'] = $tag['artist'];
+				if ((isset($tagData['artist'][0])) && (stristr($tagData['artist'][0], 'unknown') == FALSE)) {
+					$data['artist'] = $tagData['artist'][0];
 				}
 				
 				//Album Data
-				if ((isset($tag['album'])) && (stristr($tag['album'], 'unknown') == FALSE)) {
-					$data['album'] = $tag['album'];
+				if ((isset($tagData['album'][0])) && (stristr($tagData['album'][0], 'unknown') == FALSE)) {
+					$data['album'] = $tagData['album'][0];
 				}
 				
 				//Title Data
-				if ((isset($tag['title'])) && (stristr($tag['title'], 'unknown') == FALSE)) {
-					$data['title'] = $tag['title'];
+				if ((isset($tagData['title'][0])) && (stristr($tagData['title'][0], 'unknown') == FALSE)) {
+					$data['title'] = $tagData['title'][0];
 				}
+				
 			}
 			
 			return $data;
 		}
-	}
+		
+		/**
+		 * Parse OGG files
+		 * @param string $file The full path to the OGG file
+		 * @return array
+		 */
+		function parse_ogg_tags($file) {
+			//Set default
+			$data = $this->defaultTagData;
+			
+			
+			$tag = $this->getID3->analyze($file);
+			//Get tag data
+			$tagData = '';
+			if (isset($tag['tags_html']['vorbiscomment'])) {
+				$tagData = $tag['tags_html']['vorbiscomment'];
+			} 
+			
+			//If we have valid tag data
+			if ($tagData <> '') {
+				//Artist Data
+				if ((isset($tagData['artist'][0])) && (stristr($tagData['artist'][0], 'unknown') == FALSE)) {
+					$data['artist'] = $tagData['artist'][0];
+				}
+				
+				//Album Data
+				if ((isset($tagData['album'][0])) && (stristr($tagData['album'][0], 'unknown') == FALSE)) {
+					$data['album'] = $tagData['album'][0];
+				}
+				
+				//Title Data
+				if ((isset($tagData['title'][0])) && (stristr($tagData['title'][0], 'unknown') == FALSE)) {
+					$data['title'] = $tagData['title'][0];
+				}
+				
+			}
+			
+			return $data;
+		}
+		
+		/**
+		 * Parse WMA files
+		 * @param string $file The full path to the WMA file
+		 * @return array
+		 */
+		function parse_wma_tags($file) {
+			//Set default
+			$data = $this->defaultTagData;
+			
+			//Get tag data
+			$tag = $this->getID3->analyze($file);
+			
+			//Get tag data
+			$tagData = '';
+			if (isset($tag['tags_html']['asf'])) {
+				$tagData = $tag['tags_html']['asf'];
+			} 
+			
+			//If we have valid tag data
+			if ($tagData <> '') {
+				//Artist Data
+				if ((isset($tagData['artist'][0])) && (stristr($tagData['artist'][0], 'unknown') == FALSE)) {
+					$data['artist'] = $tagData['artist'][0];
+				}
+				
+				//Album Data
+				if ((isset($tagData['album'][0])) && (stristr($tagData['album'][0], 'unknown') == FALSE)) {
+					$data['album'] = $tagData['album'][0];
+				}
+				
+				//Title Data
+				if ((isset($tagData['title'][0])) && (stristr($tagData['title'][0], 'unknown') == FALSE)) {
+					$data['title'] = $tagData['title'][0];
+				}
+				
+			}
+			
+			return $data;
+		}
+		
+		/**
+		 * Parse M4A files
+		 * @param string $file The full path to the M4A file
+		 * @return array
+		 */
+		function parse_m4a_tags($file) {
+			//Set default
+			$data = $this->defaultTagData;
+			
+			//Get tag data
+			$tag = $this->getID3->analyze($file);
+			
+			//Get tag data
+			$tagData = '';
+			if (isset($tag['tags_html']['quicktime'])) {
+				$tagData = $tag['tags_html']['quicktime'];
+			} 
+			
+			//If we have valid tag data
+			if ($tagData <> '') {
+				//Artist Data
+				if ((isset($tagData['artist'][0])) && (stristr($tagData['artist'][0], 'unknown') == FALSE)) {
+					$data['artist'] = $tagData['artist'][0];
+				}
+				
+				//Album Data
+				if ((isset($tagData['album'][0])) && (stristr($tagData['album'][0], 'unknown') == FALSE)) {
+					$data['album'] = $tagData['album'][0];
+				}
+				
+				//Title Data
+				if ((isset($tagData['title'][0])) && (stristr($tagData['title'][0], 'unknown') == FALSE)) {
+					$data['title'] = $tagData['title'][0];
+				}
+				
+			}
+			
+			return $data;
+		}
+	} //End of class
 
 ?>
