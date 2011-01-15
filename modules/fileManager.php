@@ -78,7 +78,7 @@
 		} //End of function "scan"
 		
 		/**
-		 * Move a file, and create the new folders if required
+		 * Move a file to a new destion
 		 * @param string $source The file's current location
 		 * @param string $destination The file's destined location
 		 * @return void
@@ -87,25 +87,38 @@
 			$sourceDir = substr($source, 0, strrpos($source, '/'));
 			
 			//Create the new folders if and where required
-			$destinationDir = str_replace($this->rootDirectory, '', $destination);
-			$destinationDir = explode('/', substr($destinationDir, 0, strrpos($destinationDir, '/')));
-			$appendFolder = '';
-			foreach ($destinationDir as $folder) {
-				$mkDir = $this->rootDirectory.$appendFolder.$folder;
-				if (file_exists($mkDir) == FALSE) {
-					mkdir($mkDir);
-					$this->Output->send('%3Making folder: '.str_replace($this->Config->read('sorted'), '', $mkDir).'%n');
-				}
-				$appendFolder .= $folder.'/';
-			}
+			$appendFolder = $this->recursive_mkDir($destination, $this->rootDirectory);
 			
 			//Do the move
 			if (rename($source, $destination)) {
-				$this->Output->send('  %2- File Moved to '.substr($appendFolder, 0, strrpos($appendFolder, '/')).'%n');
+				$this->Output->send('  %2- File Moved to '.str_replace($this->rootDirectory, '', substr($appendFolder, 0, strrpos($appendFolder, '/'))).'%n');
 			} else {
 				$this->Output->send('  %1- Failed to Move%n');
 			}
 		} //End of function "move"
+		
+		/**
+		 * Create folders recursively
+		 * @param string $finalFolder The files destined location
+		 * @param string $niceFolderName The string to remove to shorten the folder name when sent to screen
+		 * @return string
+		 */
+		function recursive_mkDir($finalFolder, $niceFolderName = '') {
+			//Create the new folders if and where required
+			$finalFolder = str_replace(array(':', ';', '|', '`', '>', '<', '~', '*', '?', '"'), '', $finalFolder);
+			$finalFolder = explode('/', substr($finalFolder, 0, strrpos($finalFolder, '/')));
+			$appendFolder = '';
+			foreach ($finalFolder as $folder) {
+				$mkDir = $appendFolder.$folder;
+				if (($mkDir <> '') && (file_exists($mkDir) == FALSE)) {
+					mkdir($mkDir);
+					$this->Output->send('%3Making folder: '.str_replace($niceFolderName, '', $mkDir).'%n');
+				}
+				$appendFolder .= $folder.'/';
+			}
+			
+			return $appendFolder;
+		}
 		
 	}
 

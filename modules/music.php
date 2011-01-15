@@ -82,7 +82,19 @@
 			//Stats
 			$stats = array('started' => time(), 'files' => 0);
 			
+			//Check the sorted directory exists, if not, create
+			$this->Output->send('%5Checking for Sorted folder%n');
+			$sortedDir = $this->Config->read('sorted');
+			if (file_exists($sortedDir) == FALSE) {
+				$this->Output->send('%1Sorted Folder does not exist, Creating%n');
+				$this->fileManager->recursive_mkDir($sortedDir);
+			} else {
+				$this->Output->send('%2Sorted Folder Found%n');
+			}
+			
+			//Start on the unsorted folder
 			$this->Output->send('%5Scanning unsorted folder: '.$this->Config->read('unsorted').'%n');
+			sleep(1);
 			
 			//Set the rootDirectory in fileManager
 			$this->fileManager->rootDirectory = $this->Config->read('unsorted');
@@ -95,9 +107,8 @@
 			$folderNames = array_keys($structure);
 			$folderCount = count($structure);
 			
-			//Set the rootDirectory in fileManager
+			//Set the rootDirectory in fileManager to the sorted Directory
 			$this->fileManager->rootDirectory = $this->Config->read('sorted');
-			
 			//Now move onto processing
 			foreach ($structure as $item) {
 				if (strstr($item, ':') <> '') {
@@ -178,9 +189,9 @@
 			$file = substr($item, strrpos($item, '/'));
 			//Check if this a duplicate
 			if (($this->duplicate_check($info)) && ($duplicate == TRUE)) {
-				return $this->Config->read('sorted').'_duplicateMusic/'.$info['artist'].'/'.$info['album'].'/'.$file;
+				return $this->Config->read('sorted').'_duplicateMusic/'.ucwords($info['artist']).'/'.ucwords($info['album']).'/'.$file;
 			} else {
-				return $this->Config->read('sorted').$info['artist'].'/'.$info['album'].'/'.$file;
+				return $this->Config->read('sorted').ucwords($info['artist']).'/'.ucwords($info['album']).'/'.$file;
 			}
 		}
 		
