@@ -5,15 +5,15 @@ Description
 ===========================================================================
 
 This script will allow you to sort out your music, tv and movies into
-folders based on their details.
+folders based on their details. Duplicate files will be moved to a
+seperate area for manual checks.
 
 
 Requirements
 ===========================================================================
 
-* getID3() 2.0.0 or above from http://getid3.sourceforge.net
-	or http://www.getid3.org
-* PHP 5 with PHP CLI installed (Windows has this already)
+* getID3() 1.8.2 (released Dec 6, 2010) from http://getid3.sourceforge.net
+* PHP 5 with PHP CLI installed (PHP for Windows has this already)
 * at least 4MB memory for PHP. 8MB is highly recommended.
 	12MB is required with all modules loaded.
 
@@ -37,17 +37,24 @@ Quick Start
 Command Line Arguments
 ===========================================================================
 
-@show-config			This will show your configuration at the end
-							of sorting your multimedia
+@help				Shows this list
 
-@use-config <file>		This will use a file with a saved configuration.
-							Default file: config
+@config <file>		This will use a file with a saved configuration
+						located in the config/ folder.
 
 
 Changelog
 ===========================================================================
 
-v1.0	Initial Release			31/Oct/2010
+v1.1	Rewritten most of the program			14/Jan/2011
+			v1.0 was more a working theory.
+			+ Colored responces
+			+ Configuration Manager - You can create configs inside
+			+ Identify duplicates and moved to a seperate area
+			* Refined alot of code and cut the project down in areas
+			* Made the project modular
+
+v1.0	Initial Release							31/Oct/2010
 			Currently only supports Music files by reading ID3 tags.
 
 
@@ -58,8 +65,6 @@ ToDo
 	(Accessable via advanced configuration)
 
 * Support Video Files
-
-* Allow sorting with case-insensitive matching
 
 
 Wish List
